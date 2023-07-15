@@ -1,0 +1,23 @@
+#!/bin/bash
+
+ringBell=false
+[ -z "$1" ] && number=1 || number=$1
+
+while :
+do
+	delisted=
+	siteString=$(curl -s https://www.nmaps.net/$number)
+	[ -n "$(echo $siteString | grep 'Map Not Found')" ] && break
+	[ -n "$(echo $siteString | grep 'This map has been removed from listings by the author.')" ] && delisted='[delisted]'
+	[ -n "$1" ] && [ $number == $1 ] && ringBell=true
+
+	title=$(echo $siteString |  grep -oP 'Map Data.*\$\K[^#]+(?=#)')
+	author=$(echo $siteString |  grep -oP 'Map Data.*\$.*?#\K[^#]+(?=#)')
+	echo "Map $number - $title ($author) $delisted"
+
+	let number=number+1
+done
+	
+
+$ringBell && paplay /usr/share/sounds/freedesktop/stereo/complete.oga && echo
+echo "Map $number does not exist"

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+fields=$(yad --form --title="Workspace Swap" --sticky --on-top --field=First --field=Second)
+
+ws1="1:ONE"
+ws2="2:TWO"
+ws3="3:THR"
+ws4="4:FOU"
+ws5="5:FIV"
+ws6="6:SIX"
+ws7="7:SEV"
+ws8="8:EIG"
+ws9="9:NIN"
+ws10="10:TEN"
+ws99="99:|"
+
+ws=( ["1"]=$ws1 ["2"]=$ws2 ["3"]=$ws3 ["4"]=$ws4 ["5"]=$ws5 ["6"]=$ws6 ["7"]=$ws7 ["8"]=$ws8 ["9"]=$ws9 ["10"]=$ws10 ["99"]=$ws99 )
+
+one=${fields%%|*}
+two=${fields#*|} && two=${two::-1}
+
+i3-msg "rename workspace ${ws[$one]} to limbo"
+i3-msg "rename workspace ${ws[$two]} to ${ws[$one]}"
+i3-msg "rename workspace limbo to ${ws[$two]}"
